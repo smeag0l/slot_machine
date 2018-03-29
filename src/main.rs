@@ -1,7 +1,6 @@
 extern crate rand;
 
 use std::io;
-use std::io::Write;
 use rand::Rng;
 
 const SKULL: char = '\u{1F480}';
@@ -54,20 +53,11 @@ fn prompt() -> bool{
 }
 
 fn spin (wallet : &mut Wallet) {
-    let reels: [char; 3] = [get_reel(),
-                            get_reel(),
-                            get_reel()];
-    print!("{} ", reels[0]);
-    print!("{} ", reels[1]);
-    print!("{} ", reels[2]);
-    io::stdout().flush().unwrap();
-    println!("");
-
-    let payout = calculate_payout(reels[0],reels[1],reels[2]);
-
+    let reels = (get_reel(),get_reel(),get_reel());
+    println!("{} {} {} ", reels.0, reels.1, reels.2);
+    let payout = calculate_payout(reels);
     println!("You made ${}", payout);
     wallet.cash += payout;
-
 }
 
 fn get_reel() -> char {
@@ -81,14 +71,14 @@ fn get_reel() -> char {
     }
 }
 
-fn calculate_payout(reel_1:char, reel_2: char, reel_3: char) -> i32{
+fn calculate_payout(reels: (char, char, char)) -> i32{
     let mut payout = 0;
-    if reel_1 == reel_2 && reel_2 == reel_3 {
-        if reel_1 == SKULL {
+    if reels.0 == reels.1 && reels.1 == reels.2{
+        if reels.0  == SKULL {
             payout = 5;
-        } else if reel_2 == BOMB {
+        } else if reels.1 == BOMB {
             payout = 20;
-        } else if reel_3 == OCTOPUS {
+        } else if reels.2 == OCTOPUS {
             payout = 40;
         }
     }
@@ -96,6 +86,9 @@ fn calculate_payout(reel_1:char, reel_2: char, reel_3: char) -> i32{
 }
 
 fn cash_out(wallet :Wallet){
+    if wallet.cash == 0 {
+        println!("Sorry, you're broke!");
+    }
     println!("You finished with ${}", wallet.cash);
 }
 
