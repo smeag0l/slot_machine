@@ -1,0 +1,7 @@
+[package]
+name = "slot_machine"
+version = "0.1.0"
+authors = ["sméagol"]
+
+[dependencies]
+rand = "0.4.2"
